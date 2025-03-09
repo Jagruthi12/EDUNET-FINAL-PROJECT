@@ -1,17 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import { userRouter } from "./routes/user.js";
+import { recipesRouter } from "./routes/recipes.js";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const app = express();
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+app.use(express.json());
+app.use(cors());
+
+app.use("/auth", userRouter);
+app.use("/recipes", recipesRouter);
+
+mongoose.connect(
+  "mongodb+srv://<db_username>:<db_password>@cluster0.w9uyz.mongodb.net/rec_db?retryWrites=true&w=majority&appName=Cluster0",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }).then(
+    console.log("DB connected...")
+  )
+
+app.listen(3001, () => console.log("Server started"));
